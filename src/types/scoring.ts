@@ -21,9 +21,11 @@ export interface Game {
     gameState: GameState;
 }
 
+export type Roll = number;
+
 export interface Frame {
-    roll1: number | null;
-    roll2: number | null;
-    roll3: number | null;
+    roll1: Roll;
+    roll2: Roll;
+    roll3: Roll;
     total: number;
 }

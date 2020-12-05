@@ -1,13 +1,17 @@
-import { Frame, Game, GameState } from '@/types/scoring.ts';
+import { Frame, Game, GameState, Roll } from '@/types/scoring.ts';
 import { v4 as uuid } from 'uuid';
 
-export const isStrike = (roll: number): boolean => roll === 10;
-export const isSpare = (roll1: number, roll2: number): boolean => roll1 + roll2 === 10;
+const UNROLLED = -1;
+
+export const isRolled = (...rolls: Roll[]): boolean => rolls.every((roll) => roll !== UNROLLED);
+export const isStrike = (roll: Roll): boolean => (isRolled(roll) ? roll === 10 : false);
+export const isSpare = (roll1: Roll, roll2: Roll): boolean =>
+    isRolled(roll1, roll2) ? roll1 + roll2 === 10 : false;
 
 export const createNewFrame = (
-    roll1: number,
-    roll2: number,
-    roll3: number | null = null,
+    roll1: Roll = UNROLLED,
+    roll2: Roll = UNROLLED,
+    roll3: Roll = UNROLLED,
     total = 0
 ): Frame => ({
     roll1,
@@ -25,27 +29,8 @@ export const createNewGame = (playerName: string): Game => ({
     gameState: GameState.Playing,
 });
 
-// Convert 1d roll array to a 2d array of 2x rolls (3 for 10th frame)
-export const createFrameRolls = (rolls: number[]): number[][] => {
-    const newRolls = Array(10).fill(Array(2).fill(undefined));
-    let frameIndex = 0;
-    for (let i = 0; i < rolls.length; i++) {
-        if (frameIndex === 9) {
-            newRolls[frameIndex] = [rolls[i], rolls[i + 1], rolls[i + 2]];
-            break;
-        } else if (rolls[i] === 10) {
-            newRolls[frameIndex] = [10, 0];
-        } else {
-            newRolls[frameIndex] = [rolls[i], rolls[i + 1]];
-            i++;
-        }
-        frameIndex++;
-    }
-    return newRolls;
-};
-
 // Calculates the sum of rolls, up until stopIndex (if passed)
-export const calculateSum = (rolls: number[], stopIndex: number): number => {
+export const calculateSum = (rolls: Roll[]): number => {
     let totalSum = 0;
     let rollIndex = 0;
 
@@ -53,7 +38,7 @@ export const calculateSum = (rolls: number[], stopIndex: number): number => {
         let rollSum = rolls[rollIndex];
 
         // Break if this roll doesn't exist yet, or we hit stopIndex
-        if (rollSum === undefined || rollIndex > stopIndex) break;
+        if (rollSum === undefined) break;
 
         if (rollSum > 9) {
             // Strike
@@ -80,70 +65,56 @@ export const calculateSum = (rolls: number[], stopIndex: number): number => {
     return totalSum;
 };
 
-export const isLastFrame2 = (index: number, rolls: number[]): boolean => {
-    //[X, X, X, X, X, X, X, X, X]
-    const noOfStrikes = rolls.filter(isStrike).length;
-    console.log('noOfStrikes', noOfStrikes);
-    const frameIndex = Math.floor((index + noOfStrikes * 2) / 2);
-    console.log('frameIndex', frameIndex);
-
-    if (frameIndex > 10) {
-        throw Error('Frame overflow');
-    }
-
-    return frameIndex === 10;
-};
-
-export const createFrames = (rolls: number[]): Frame[] => {
+export const createFrames = (rolls: Roll[]): Frame[] => {
     // [10, 5, 5, 4, 0]
     // [10]
 
+    const createGetRollAtIndex = (rolls: Roll[]) => (index: number) =>
+        index >= rolls.length ? UNROLLED : rolls[index];
+
+    const getRollAtIndex = createGetRollAtIndex(rolls);
     const frames: Frame[] = [];
 
-    // const newRolls = [...rolls].reduce<number[]>((acc, roll): number[] => {
-    //     const isNotLastFrame = acc.length / 2 !== 10;
-    //     if (isStrike(roll) && isNotLastFrame) {
-    //         acc.push(roll, 0);
-    //     } else {
-    //         acc.push(roll);
-    //     }
-    //     return acc;
-    // }, []);
-
-    // Create a new array, inserting a 0 roll after every strike
-    // const newRolls = [...rolls].reduce<number[]>((acc, roll): number[] => {
-    //     const isNotLastFrame = acc.length / 2 < 10;
-    //     isStrike(roll) && isNotLastFrame ? acc.concat(roll, 0) : acc.concat(roll);
-    // }, []);
-
-    const totals: number[] = rolls.map((_, index, arr): number => {
-        return calculateSum(arr, index);
-    });
-
     console.log('rolls', rolls);
-    console.log('totals', totals);
 
-    for (let i = 0; i < rolls.length; i++) {
-        const isLastFrame = frames.length / 2 > 10;
-        const currRoll = rolls[i];
-        const nextRoll = rolls[i + 1] === undefined ? null : rolls[i + 1];
-        const nextnextRoll = rolls[i + 2] === undefined ? null : rolls[i + 2];
+    let rollIndex = 0;
+    for (let i = 1; i <= 10; i++) {
+        if (rollIndex >= rolls.length) break;
+
+        // const isLastFrame = frames.length / 2 > 10;
+        const isLastFrame = i === 10;
+        const currRoll = getRollAtIndex(rollIndex);
+        const nextRoll = getRollAtIndex(rollIndex + 1);
+        const nextnextRoll = getRollAtIndex(rollIndex + 2);
+        const total = calculateSum(rolls.slice(0, rollIndex + 1));
 
         if (isLastFrame) {
             frames.push({
                 roll1: currRoll,
                 roll2: nextRoll,
                 roll3: nextnextRoll,
-                total: totals[totals.length - 1],
+                total,
             });
-            break;
-        } else if (isStrike(currRoll)) {
-            frames.push({ roll1: currRoll, roll2: 0, roll3: null, total: totals[i] });
-        } else {
-            const total = nextRoll === null ? totals[i] : totals[i + 1];
-            frames.push({ roll1: currRoll, roll2: nextRoll, roll3: null, total });
-            i++;
+            rollIndex++;
+            continue;
         }
+        if (isStrike(currRoll)) {
+            frames.push({
+                roll1: currRoll,
+                roll2: 0,
+                roll3: UNROLLED,
+                total,
+            });
+            rollIndex++;
+            continue;
+        }
+        frames.push({
+            roll1: currRoll,
+            roll2: nextRoll,
+            roll3: UNROLLED,
+            total,
+        });
+        rollIndex += 2;
     }
 
     console.log('frames', frames);
@@ -169,17 +140,5 @@ export const getRollResultSymbols = (
     }
 };
 
-// Check that all passed rolls have been rolled
-export const hasRolled = (...rolls: number[]) => rolls.every((roll) => roll !== undefined);
-
 // How many pins are left on the frame
-export const calculatePinsLeft = (frames: number[][]): number => {
-    const currRollFrame =
-        frames.find((frame) => frame[1] === undefined) ||
-        frames.find((frame) => frame[0] === undefined && frame[1] === undefined);
-
-    if (!currRollFrame) {
-        return 10;
-    }
-    return 10 - (currRollFrame[0] || 0) - (currRollFrame[1] || 0);
-};
+// export const calculatePinsLeft = () => {};

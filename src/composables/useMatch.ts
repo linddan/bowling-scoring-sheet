@@ -1,12 +1,10 @@
 import { Game } from '@/types/scoring';
 import { reactive, ComputedRef, computed } from 'vue';
 import { MatchStoreState, GameState } from '@/types/scoring.ts';
-import { createGame, isStrike } from '@/utils/game';
-
-// TODO: Cleanup. Especially match/game-states.
+import { createNewGame } from '@/utils/game.ts';
+import useGame from './useGame';
 
 const state: MatchStoreState = reactive({
-    games: [],
     matchState: GameState.NotStarted,
 });
 
@@ -26,12 +24,8 @@ interface UseMatch {
 
 export default (): UseMatch => {
     // Mutations
-    const setGames = (payload: Game[]) => {
-        state.games = payload;
-    };
-    const setMatchState = (payload: GameState) => {
-        state.matchState = payload;
-    };
+    const setGames = (games: Game[]) => (state.games = games);
+    const setMatchState = (matchState: GameState) => (state.matchState = matchState);
 
     // Actions
     const startMatch = () => setMatchState(GameState.Playing);
@@ -50,7 +44,8 @@ export default (): UseMatch => {
         }
     };
     const addGame = (playerName: string) => {
-        setGames([...state.games, createGame(playerName)] as Game[]);
+        createGame(createNewGame(playerName));
+        setGames([...state.games, newGame] as Game[]);
         startMatch();
     };
 

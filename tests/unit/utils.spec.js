@@ -1,6 +1,6 @@
-import { calculateSum } from '../../src/utils/game.ts';
+import { calculateSum, createFrames } from '../../src/utils/game.ts';
 
-describe('calculateSum', () => {
+describe.skip('calculateSum', () => {
     test('5|2, 7|1, 3|6 should give the output 24', () => {
         const rolls = [5, 2, 7, 1, 3, 6];
         expect(calculateSum(rolls)).toBe(24);
@@ -29,5 +29,14 @@ describe('calculateSum', () => {
     test('all misses should give the output 0 :(', () => {
         const rolls = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
         expect(calculateSum(rolls)).toBe(300);
+    });
+});
+
+describe('createFrames', () => {
+    test('should work', () => {
+        const rolls = [10, 5, 5, 4, 0, 1];
+        const frames = createFrames(rolls);
+        console.log(frames);
+        expect(frames.length).toBe(4);
     });
 });

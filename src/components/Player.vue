@@ -1,5 +1,5 @@
 <template>
-    <div class="text-xl text-white uppercase" data-cy="playerName">{{ name }}</div>
+    <div class="text-xl text-gray-800" data-cy="playerName">{{ name }}</div>
 </template>
 
 <script>

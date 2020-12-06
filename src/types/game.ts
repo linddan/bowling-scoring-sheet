@@ -9,10 +9,24 @@ export interface MatchStoreState {
     matchState: GameState;
 }
 
+export interface GameStoreState {
+    games: Game[];
+}
+
 export interface Game {
     id: string;
     rolls: number[];
+    frames: Frame[];
     player: string;
     total: number;
     gameState: GameState;
+}
+
+export type Roll = number;
+
+export interface Frame {
+    roll1: Roll;
+    roll2: Roll;
+    roll3: Roll;
+    total: number;
 }

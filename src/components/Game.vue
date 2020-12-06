@@ -1,54 +1,47 @@
 <template>
-    <div class="my-8">
+    <div>
         <!-- Player -->
-        <player :name="playerName" />
-        <!-- Total -->
-        <div class="text-xl text-white">Total: {{ grandTotal }}</div>
         <!-- Score input -->
-        <div class="flex flex-row w-full py-4">
+        <div class="flex flex-row justify-between w-full py-4">
             <score-input v-if="!isGameFinished" :max="pinsLeft" @roll="onRoll" />
+            <player :name="playerName" />
         </div>
         <!-- Frames -->
         <div class="flex flex-wrap">
             <frame
-                v-for="(frameRolls, index) in frames"
+                v-for="(_, index) in 10"
                 :turn="index + 1"
-                :roll1="frameRolls[0]"
-                :roll2="frameRolls[1]"
-                :roll3="frameRolls[2]"
-                :total="calculateFrameSum(index)"
+                :roll1="frames[index]?.roll1"
+                :roll2="frames[index]?.roll2"
+                :roll3="frames[index]?.roll3"
+                :total="frames[index]?.total"
                 :key="`${id}-${index}`"
-                @gameover="onGameOver"
             />
+            <total-frame :total="total" />
         </div>
     </div>
 </template>
 
 <script>
-import { computed } from 'vue';
 import Frame from './Frame.vue';
 import ScoreInput from './ScoreInput.vue';
-import { createFrameRolls, calculateSum, calculatePinsLeft } from '@/utils/game';
 import Player from './Player.vue';
+import TotalFrame from './TotalFrame.vue';
+import { getPinsLeft } from '@/utils/game';
+import { computed } from 'vue';
 
 export default {
     emits: ['roll', 'gameover'],
-    components: { Frame, ScoreInput, Player },
+    components: { Frame, ScoreInput, Player, TotalFrame },
     props: {
         id: String,
         playerName: String,
-        rolls: Array,
+        frames: Array,
+        total: Number,
         isGameFinished: Boolean,
     },
     setup(props, context) {
-        const frames = computed(() => createFrameRolls(props.rolls));
-        const grandTotal = computed(() => calculateSum(props.rolls));
-        const pinsLeft = computed(() => calculatePinsLeft(frames.value));
-
-        const calculateFrameSum = (index) => {
-            const noOfRolls = index * 2 < 19 ? 2 : 3;
-            return calculateSum(props.rolls, index * 2 + noOfRolls);
-        };
+        const pinsLeft = computed(() => getPinsLeft(props.frames));
 
         const onRoll = (score) => {
             context.emit('roll', {
@@ -61,7 +54,7 @@ export default {
             context.emit('gameover', props.id);
         };
 
-        return { onRoll, pinsLeft, frames, grandTotal, calculateFrameSum, onGameOver };
+        return { onRoll, pinsLeft, onGameOver };
     },
 };
 </script>

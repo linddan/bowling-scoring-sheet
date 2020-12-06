@@ -1,7 +1,7 @@
-import { Game } from '@/types/scoring';
+import { Game } from '@/types/game';
 import { reactive, ComputedRef, computed } from 'vue';
-import { MatchStoreState, GameState } from '@/types/scoring.ts';
-import { createGame, isStrike } from '@/utils/game';
+import { MatchStoreState, GameState } from '@/types/game';
+import { calculateSum, createNewGame } from '@/utils/game';
 
 // TODO: Cleanup. Especially match/game-states.
 
@@ -50,18 +50,29 @@ export default (): UseMatch => {
         }
     };
     const addGame = (playerName: string) => {
-        setGames([...state.games, createGame(playerName)] as Game[]);
+        setGames([...state.games, createNewGame(playerName)] as Game[]);
         startMatch();
     };
 
     const updateRolls = (gameId: string, rollScore: number) => {
-        //TODO: Don't mutate
         const game = state.games.find((game) => game.id === gameId);
         const restGames = state.games.filter((game) => game.id !== gameId);
         if (game) {
             // Update roll score
-            game.rolls.push(rollScore);
-            setGames([game, ...restGames]);
+            const updatedRolls = [...game.rolls, rollScore];
+            // Recalculate
+            const { frames, sum, isGameFinished } = calculateSum(updatedRolls);
+            // Update the game (create a copy, no mutating)
+            const newGame = {
+                id: game.id,
+                player: game.player,
+                rolls: updatedRolls,
+                total: sum,
+                frames,
+                gameState: isGameFinished ? GameState.Finished : game.gameState,
+            };
+            console.log({ newGame });
+            setGames([newGame, ...restGames]);
         }
     };
 

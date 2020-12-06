@@ -104,6 +104,7 @@ export const getRollResultSymbols = (
 
 // How many pins are left on the frame
 export const getPinsLeft = ({ roll1, roll2, roll3 }: Frame) => {
+    //TODO: Last frame
     if (isRolled(roll1, roll2)) {
         // New frame
         return 10;

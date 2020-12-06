@@ -1,7 +1,7 @@
 import { Frame, Game, GameState, Roll } from '@/types/scoring.ts';
 import { v4 as uuid } from 'uuid';
 
-const UNROLLED = -1;
+export const UNROLLED = -1;
 
 export const isRolled = (...rolls: Roll[]): boolean => rolls.every((roll) => roll !== UNROLLED);
 export const isStrike = (roll: Roll): boolean => (isRolled(roll) ? roll === 10 : false);
@@ -69,17 +69,11 @@ export const getRollResultSymbols = (
     roll2: Roll,
     roll3: Roll
 ): Array<string | number> => {
-    // If user has 2 strikes in 10th frame
-    if (isRolled(roll3)) {
-        return ['X', 'X', roll3];
-    }
-    if (isStrike(roll1)) {
-        return ['X', ''];
-    } else if (isSpare(roll1, roll2)) {
-        return [roll1, '/'];
-    } else {
-        return [roll1, roll2, roll3];
-    }
+    const roll1Symbol = isStrike(roll1) ? 'X' : roll1;
+    const roll2Symbol = isStrike(roll2) ? 'X' : isSpare(roll1, roll2) ? '/' : roll2;
+    const roll3Symbol = isStrike(roll3) ? 'X' : roll3;
+
+    return [roll1Symbol, roll2Symbol, roll3Symbol];
 };
 
 // How many pins are left on the frame

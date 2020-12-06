@@ -1,6 +1,6 @@
-import { calculateSum } from '../../src/utils/game.ts';
+import { calculateSum, getRollResultSymbols, UNROLLED } from '../../src/utils/game.ts';
 
-describe('frame list', () => {
+describe('calculateSum - frames', () => {
     test('5|2, 7|1, 3|6 should give correct frame list', () => {
         const rolls = [5, 2, 7, 1, 3, 6];
         const { frames } = calculateSum(rolls);
@@ -13,7 +13,16 @@ describe('frame list', () => {
     //TODO: Test strikes, spares, last frame
 });
 
-describe('sum', () => {
+describe('getRollResultSymbols', () => {
+    test('4|5 should give frame symbols 4|5', () => {
+        expect(getRollResultSymbols(4, 5, UNROLLED)).toMatchObject([4, 5, UNROLLED]);
+    });
+    test('5|5 should give frame symbols 5|/', () => {
+        expect(getRollResultSymbols(5, 5, UNROLLED)).toMatchObject([5, '/', UNROLLED]);
+    });
+});
+
+describe('calculateSum - sum', () => {
     test('5|2, 7|1, 3|6 should give the output 24', () => {
         const rolls = [5, 2, 7, 1, 3, 6];
         const { sum } = calculateSum(rolls);

@@ -1,4 +1,4 @@
-import { Frame, Game, GameState, Roll } from '@/types/scoring.ts';
+import { Frame, Game, GameState, Roll } from '@/types/game';
 import { v4 as uuid } from 'uuid';
 
 export const UNROLLED = -1;
@@ -103,12 +103,20 @@ export const getRollResultSymbols = (
 };
 
 // How many pins are left on the frame
-export const getPinsLeft = ({ roll1, roll2, roll3 }: Frame) => {
-    //TODO: Last frame
-    if (isRolled(roll1, roll2)) {
-        // New frame
+export const getPinsLeft = (frames: Frame[]) => {
+    // First frame
+    if (frames.length === 0) return 10;
+
+    const isLastFrame = frames.length === MAX_NO_FRAMES;
+    const { roll1, roll2 } = frames[frames.length - 1];
+
+    if (isLastFrame) {
+        //TODO: Add logic to return correct amount
+        return 10;
+    } else if (isRolled(roll1, roll2)) {
+        // New frame started
         return 10;
     } else {
-        return 10 - roll1 - roll2;
+        return 10 - roll1;
     }
 };

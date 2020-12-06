@@ -1,6 +1,6 @@
-import { Game } from '@/types/scoring';
+import { Game } from '@/types/game';
 import { reactive, ComputedRef, computed } from 'vue';
-import { MatchStoreState, GameState } from '@/types/scoring.ts';
+import { MatchStoreState, GameState } from '@/types/game';
 import { calculateSum, createNewGame } from '@/utils/game';
 
 // TODO: Cleanup. Especially match/game-states.
@@ -71,6 +71,7 @@ export default (): UseMatch => {
                 frames,
                 gameState: isGameFinished ? GameState.Finished : game.gameState,
             };
+            console.log({ newGame });
             setGames([newGame, ...restGames]);
         }
     };

@@ -1,4 +1,4 @@
-import { calculateSum, getRollResultSymbols, UNROLLED } from '../../src/utils/game.ts';
+import { calculateSum, getRollResultSymbols } from '../../src/utils/game';
 
 describe('calculateSum - frames', () => {
     test('5|2, 7|1, 3|6 should give correct frame list', () => {

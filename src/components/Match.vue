@@ -26,7 +26,7 @@
             </button>
         </div>
         <!-- Match result -->
-        <div class="text-white text-4xl" v-if="isMatchFinished">Match finished!</div>
+        <div class="text-gray-800 text-4xl" v-if="isMatchFinished">Match finished!</div>
         <!-- Game -->
         <game
             v-for="game in games"

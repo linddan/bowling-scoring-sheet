@@ -41,10 +41,7 @@ export default {
         isGameFinished: Boolean,
     },
     setup(props, context) {
-        const lastFrame = computed(() => props.frames[props.frames.length - 1]);
-        const pinsLeft = computed(() =>
-            lastFrame.value ? getPinsLeft(props.frames[props.frames.length - 1]) : 11
-        );
+        const pinsLeft = computed(() => getPinsLeft(props.frames));
 
         const onRoll = (score) => {
             context.emit('roll', {

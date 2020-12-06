@@ -38,13 +38,10 @@ export default {
         roll3: Number,
         total: Number,
     },
-    setup(props, context) {
+    setup(props) {
         const rollResultSymbols = computed(() =>
             getRollResultSymbols(props.roll1, props.roll2, props.roll3)
         );
-
-        // const shouldShowTotal = computed(() => hasRolled(props.roll1, props.roll2));
-        // const isFrameStarted = computed(() => hasRolled(props.roll1));
 
         return { rollResultSymbols };
     },

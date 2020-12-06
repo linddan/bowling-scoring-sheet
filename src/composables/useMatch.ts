@@ -1,7 +1,7 @@
 import { Game } from '@/types/scoring';
 import { reactive, ComputedRef, computed } from 'vue';
 import { MatchStoreState, GameState } from '@/types/scoring.ts';
-import { createNewGame, isStrike } from '@/utils/game';
+import { calculateSum, createNewGame } from '@/utils/game';
 
 // TODO: Cleanup. Especially match/game-states.
 
@@ -55,15 +55,23 @@ export default (): UseMatch => {
     };
 
     const updateRolls = (gameId: string, rollScore: number) => {
-        //TODO: Don't mutate
-
         const game = state.games.find((game) => game.id === gameId);
         const restGames = state.games.filter((game) => game.id !== gameId);
         if (game) {
             // Update roll score
-            game.rolls.push(rollScore);
-            setGames([game, ...restGames]);
-            console.log('updated rolls:', game.rolls);
+            const updatedRolls = [...game.rolls, rollScore];
+            // Recalculate
+            const { frames, sum, isGameFinished } = calculateSum(updatedRolls);
+            // Update the game (create a copy, no mutating)
+            const newGame = {
+                id: game.id,
+                player: game.player,
+                rolls: updatedRolls,
+                total: sum,
+                frames,
+                gameState: isGameFinished ? GameState.Finished : game.gameState,
+            };
+            setGames([newGame, ...restGames]);
         }
     };
 

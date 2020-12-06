@@ -30,10 +30,11 @@
         <!-- Game -->
         <game
             v-for="game in games"
+            :key="game.id"
             :id="game.id"
             :playerName="game.player"
-            :rolls="game.rolls"
-            :key="game.id"
+            :frames="game.frames"
+            :total="game.total"
             :isGameFinished="isGameFinished(game.id)"
             @roll="onPlayerRoll"
             @gameover="onGameOver"

@@ -19,6 +19,7 @@ export const createNewGame = (playerName: string): Game => ({
     rolls: [],
     player: playerName || 'John Doe',
     total: 0,
+    frames: [],
     gameState: GameState.Playing,
 });
 
@@ -68,11 +69,12 @@ export const calculateSum = (
         // Add current frame to list
         frames.push({
             roll1: currRoll,
-            roll2: isStrikeFrame ? 0 : nextRoll,
+            roll2: isLastFrame ? nextRoll : isStrikeFrame ? 0 : nextRoll,
             roll3: isLastFrame ? nextNextRoll : UNROLLED,
             total: gameSum,
         });
     }
+    console.log({ frames });
 
     return { sum: gameSum, frames, isGameFinished: isGameFinished(frames) };
 };

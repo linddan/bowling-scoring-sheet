@@ -7,7 +7,7 @@
             <div class="flex-grow h-8 w-8 text-center border-r">{{ rollResultSymbols[0] }}</div>
             <div class="flex-grow h-8 w-8 text-center border-r">{{ rollResultSymbols[1] }}</div>
             <div v-if="turn === 10" class="flex-grow h-8 w-8 text-center">
-                {{ rollResultSymbols[3] }}
+                {{ rollResultSymbols[2] }}
             </div>
         </div>
         <!-- Total -->

@@ -16,6 +16,7 @@ export interface GameStoreState {
 export interface Game {
     id: string;
     rolls: number[];
+    frames: Frame[];
     player: string;
     total: number;
     gameState: GameState;

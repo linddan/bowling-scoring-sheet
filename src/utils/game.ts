@@ -34,66 +34,52 @@ export const createNewGame = (playerName: string): Game => ({
 
 // Calculates the sum of rolls, up until stopIndex (if passed)
 export const calculateSum = (rolls: Roll[]): any => {
-    const getRollAtIndex = createGetRollAtIndex(rolls);
     const frames: Frame[] = [];
+    const getRollAtIndex = createGetRollAtIndex(rolls);
 
-    let totalSum = 0;
+    let gameSum = 0;
     let rollIndex = 0;
-    const frameSums = [];
+
     for (let frame = 0; frame < 10; frame++) {
         const isLastFrame = frame === 10;
-        const newFrame = createNewFrame();
-
-        const prevRoll = getRollAtIndex(rollIndex - 1);
         const currRoll = getRollAtIndex(rollIndex);
         const nextRoll = getRollAtIndex(rollIndex + 1);
         const nextnextRoll = getRollAtIndex(rollIndex + 2);
 
-        let rollSum = currRoll;
+        let frameSum = currRoll;
 
-        console.log('isRolled', rollIndex, isRolled(currRoll));
-        if (!isRolled(currRoll)) {
-            console.log('STOP AT', rollIndex);
-            break;
-        }
-        if (isStrike(currRoll)) {
+        if (!isRolled(currRoll)) break;
+
+        if (isStrike(currRoll) || isSpare(currRoll, nextRoll)) {
             // Strike
-            console.log('Strike at', rollIndex);
             if (isRolled(nextRoll)) {
-                rollSum += nextRoll;
+                frameSum += nextRoll;
             }
             if (isRolled(nextnextRoll)) {
-                rollSum += nextnextRoll;
+                frameSum += nextnextRoll;
             }
             rollIndex++;
-        } else if (isSpare(currRoll, nextRoll)) {
-            // isRolled(prevRoll)
-            // Spare
-            console.log('Spare at', rollIndex);
-            if (isRolled(nextRoll)) {
-                rollSum += nextRoll;
+            if (isSpare(currRoll, nextRoll)) {
+                rollIndex++;
             }
-            if (isRolled(nextnextRoll)) {
-                rollSum += nextnextRoll;
-            }
-            rollIndex += 2;
         } else {
             // Normal
-            console.log('Normal at', rollIndex);
             if (isRolled(nextRoll)) {
-                rollSum += nextRoll;
+                frameSum += nextRoll;
             }
             rollIndex += 2;
         }
-        totalSum += rollSum;
-        newFrame.total = totalSum;
-        newFrame.roll1 = currRoll;
-        newFrame.roll2 = isStrike(currRoll) ? 0 : nextRoll;
-        newFrame.roll3 = isLastFrame ? nextnextRoll : UNROLLED;
+        gameSum += frameSum;
 
-        frames.push(newFrame);
+        // Add current frame to list
+        frames.push({
+            roll1: currRoll,
+            roll2: isStrike(currRoll) ? 0 : nextRoll,
+            roll3: isLastFrame ? nextnextRoll : UNROLLED,
+            total: gameSum,
+        });
     }
-    return { sum: totalSum, frames };
+    return { sum: gameSum, frames };
 };
 
 // export const createFrames = (rolls: Roll[]): Frame[] => {

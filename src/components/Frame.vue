@@ -1,18 +1,22 @@
 <template>
-    <div class="flex flex-col h-32 w-32 bg-white border-r border-b shadow-sm">
+    <div class="flex flex-col h-24 w-24 bg-white border-r border-b shadow-sm">
         <!-- Turn -->
-        <div class="py-1 text-center font-bold bg-indigo-100">{{ turn }}</div>
+        <div class=" text-center font-semi-bold bg-indigo-100">{{ turn }}</div>
         <!-- Rolls -->
         <div class="flex items-center flex-row border-b">
-            <div class="flex-grow h-8 w-8 text-center border-r">{{ rollResultSymbols[0] }}</div>
-            <div class="flex-grow h-8 w-8 text-center border-r">{{ rollResultSymbols[1] }}</div>
-            <div v-if="turn === 10" class="flex-grow h-8 w-8 text-center">
+            <div class="flex-grow h-6 w-6 text-center text-sm border-r">
+                {{ rollResultSymbols[0] }}
+            </div>
+            <div class="flex-grow h-6 w-6 text-center text-sm">
+                {{ rollResultSymbols[1] }}
+            </div>
+            <div v-if="turn === 10" class="flex-grow h-6 w-6 border-l text-center text-sm">
                 {{ rollResultSymbols[2] }}
             </div>
         </div>
         <!-- Total -->
         <div class="flex items-center h-full w-full">
-            <div class="text-center w-full text-4xl font-bold">
+            <div class="text-center w-full text-2xl font-semi">
                 {{ total }}
             </div>
         </div>

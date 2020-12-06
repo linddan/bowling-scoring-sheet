@@ -9,7 +9,7 @@
             <score-input v-if="!isGameFinished" :max="pinsLeft" @roll="onRoll" />
         </div>
         <!-- Frames -->
-        <div class="flex flex-wrap">
+        <div class="flex flex-wrap shadow-md">
             <frame
                 v-for="(_, index) in 10"
                 :turn="index + 1"

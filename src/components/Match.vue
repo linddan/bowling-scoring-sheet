@@ -2,27 +2,27 @@
     <div class="flex items-center flex-col">
         <div class="flex mb-8">
             <!-- Add game -->
-            <form class="h-8" @submit.prevent="addNewGame(newPlayerName)">
+            <form autocomplete="off" @submit.prevent="addNewGame(newPlayerName)">
                 <input
-                    class="p-2 h-full text-gray-500 placeholder-gray-300 focus:outline-none"
+                    class="p-2 h-full border-2 border-gray-600 rounded-sm  text-gray-600 placeholder-gray-300 focus:outline-none"
                     v-model="newPlayerName"
                     type="text"
                     placeholder="Enter your name"
                     data-cy="nameInput"
                 />
                 <button
-                    class="p-2 h-full rounded-r-sm bg-green-500 hover:bg-green-400 text-sm text-white font-bold uppercase focus:outline-none"
+                    class="ml-2 px-4 py-2 rounded-full border-2 border-green-500 hover:shadow-md transform hover:-translate-y-0.5 text-md text-green-800 font-medium focus:outline-none"
                 >
-                    Add Game
+                    Add a game
                 </button>
             </form>
             <!-- Reset match -->
             <button
-                class="ml-5 p-2 rounded-sm bg-red-500 hover:bg-red-400 text-sm text-white font-bold  uppercase focus:outline-none"
+                class="ml-2 px-4 py-2 rounded-full border-2 border-red-500 bg-red-500 hover:shadow-md transform hover:-translate-y-0.5 text-md text-white font-medium focus:outline-none"
                 @click="resetMatch()"
                 v-if="isMatchPlaying"
             >
-                Reset Match
+                Reset match
             </button>
         </div>
         <!-- Match result -->

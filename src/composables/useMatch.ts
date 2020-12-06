@@ -1,10 +1,12 @@
 import { Game } from '@/types/scoring';
 import { reactive, ComputedRef, computed } from 'vue';
 import { MatchStoreState, GameState } from '@/types/scoring.ts';
-import { createNewGame } from '@/utils/game.ts';
-import useGame from './useGame';
+import { createNewGame, isStrike } from '@/utils/game';
+
+// TODO: Cleanup. Especially match/game-states.
 
 const state: MatchStoreState = reactive({
+    games: [],
     matchState: GameState.NotStarted,
 });
 
@@ -24,8 +26,12 @@ interface UseMatch {
 
 export default (): UseMatch => {
     // Mutations
-    const setGames = (games: Game[]) => (state.games = games);
-    const setMatchState = (matchState: GameState) => (state.matchState = matchState);
+    const setGames = (payload: Game[]) => {
+        state.games = payload;
+    };
+    const setMatchState = (payload: GameState) => {
+        state.matchState = payload;
+    };
 
     // Actions
     const startMatch = () => setMatchState(GameState.Playing);
@@ -44,19 +50,20 @@ export default (): UseMatch => {
         }
     };
     const addGame = (playerName: string) => {
-        createGame(createNewGame(playerName));
-        setGames([...state.games, newGame] as Game[]);
+        setGames([...state.games, createNewGame(playerName)] as Game[]);
         startMatch();
     };
 
     const updateRolls = (gameId: string, rollScore: number) => {
         //TODO: Don't mutate
+
         const game = state.games.find((game) => game.id === gameId);
         const restGames = state.games.filter((game) => game.id !== gameId);
         if (game) {
             // Update roll score
             game.rolls.push(rollScore);
             setGames([game, ...restGames]);
+            console.log('updated rolls:', game.rolls);
         }
     };
 

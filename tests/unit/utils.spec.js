@@ -12,13 +12,53 @@ describe('calculateSum - frames', () => {
     });
     //TODO: Test strikes, spares, last frame
 });
+describe('calculateSum - isGameFinshed', () => {
+    test('last frame with 5|2 should be game over', () => {
+        const prevRolls = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; //36
+        const lastFrameRolls = [5, 2]; // 7
+        const rolls = [...prevRolls, ...lastFrameRolls];
 
-describe('getRollResultSymbols', () => {
-    test('4|5 should give frame symbols 4|5', () => {
-        expect(getRollResultSymbols(4, 5, UNROLLED)).toMatchObject([4, 5, UNROLLED]);
+        const { isGameFinished } = calculateSum(rolls);
+        expect(isGameFinished).toBe(true);
     });
-    test('5|5 should give frame symbols 5|/', () => {
-        expect(getRollResultSymbols(5, 5, UNROLLED)).toMatchObject([5, '/', UNROLLED]);
+    test('last frame with spare should not be game over ', () => {
+        const prevRolls = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; //36
+        const lastFrameRolls = [5, 5]; // 7
+        const rolls = [...prevRolls, ...lastFrameRolls];
+
+        const { isGameFinished } = calculateSum(rolls);
+        expect(isGameFinished).toBe(false);
+    });
+    test('last frame with strike should not be game over', () => {
+        const prevRolls = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; //36
+        const lastFrameRolls = [10, 2]; // 7
+        const rolls = [...prevRolls, ...lastFrameRolls];
+
+        const { isGameFinished } = calculateSum(rolls);
+        expect(isGameFinished).toBe(false);
+    });
+    test('last frame with two strikes should be game over', () => {
+        const prevRolls = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; //36
+        const lastFrameRolls = [10, 10]; // 7
+        const rolls = [...prevRolls, ...lastFrameRolls];
+        const { isGameFinished } = calculateSum(rolls);
+        expect(isGameFinished).toBe(false);
+    });
+    test('last frame with two strikes and 1 should be game over', () => {
+        const prevRolls = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; //36
+        const lastFrameRolls = [10, 10, 1]; // 7
+        const rolls = [...prevRolls, ...lastFrameRolls];
+        console.log('ROLLS', rolls);
+        const { isGameFinished } = calculateSum(rolls);
+        expect(isGameFinished).toBe(true);
+    });
+    test('last frame with three strikes should be game over', () => {
+        const prevRolls = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; //36
+        const lastFrameRolls = [10, 10, 10]; // 7
+        const rolls = [...prevRolls, ...lastFrameRolls];
+
+        const { isGameFinished } = calculateSum(rolls);
+        expect(isGameFinished).toBe(true);
     });
 });
 
@@ -91,5 +131,14 @@ describe('calculateSum - sum', () => {
 
         const { sum } = calculateSum(rolls);
         expect(sum).toBe(66);
+    });
+});
+
+describe('getRollResultSymbols', () => {
+    test('4|5 should give frame symbols 4|5', () => {
+        expect(getRollResultSymbols(4, 5, '')).toMatchObject([4, 5, '']);
+    });
+    test('5|5 should give frame symbols 5|/', () => {
+        expect(getRollResultSymbols(5, 5, '')).toMatchObject([5, '/', '']);
     });
 });

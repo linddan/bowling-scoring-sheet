@@ -2,11 +2,13 @@ import { Frame, Game, GameState, Roll } from '@/types/scoring.ts';
 import { v4 as uuid } from 'uuid';
 
 export const UNROLLED = -1;
+export const MAX_NO_PINS = 10;
+export const MAX_NO_FRAMES = 10;
 
 export const isRolled = (...rolls: Roll[]): boolean => rolls.every((roll) => roll !== UNROLLED);
-export const isStrike = (roll: Roll): boolean => (isRolled(roll) ? roll === 10 : false);
+export const isStrike = (roll: Roll): boolean => (isRolled(roll) ? roll === MAX_NO_PINS : false);
 export const isSpare = (roll1: Roll, roll2: Roll): boolean =>
-    isRolled(roll1, roll2) ? roll1 + roll2 === 10 : false;
+    isRolled(roll1, roll2) ? roll1 + roll2 === MAX_NO_PINS : false;
 
 const createGetRollAtIndex = (rolls: Roll[]) => (index: number) =>
     index < 0 || index >= rolls.length ? UNROLLED : rolls[index];
@@ -20,8 +22,19 @@ export const createNewGame = (playerName: string): Game => ({
     gameState: GameState.Playing,
 });
 
+const isGameFinished = (frames: Frame[]): boolean => {
+    if (frames.length !== MAX_NO_FRAMES) return false;
+    const { roll1, roll2, roll3 } = frames[MAX_NO_FRAMES - 1];
+    console.log('ROLLS', { roll1, roll2, roll3 });
+    return isStrike(roll1) || isStrike(roll2) || isSpare(roll1, roll2)
+        ? isRolled(roll3)
+        : isRolled(roll2);
+};
+
 // Calculates the sum of rolls, up until stopIndex (if passed)
-export const calculateSum = (rolls: Roll[]): { sum: number; frames: Frame[] } => {
+export const calculateSum = (
+    rolls: Roll[]
+): { sum: number; frames: Frame[]; isGameFinished: boolean } => {
     const frames: Frame[] = [];
     const getRollAtIndex = createGetRollAtIndex(rolls);
     const geAddValue = (roll: Roll) => (isRolled(roll) ? roll : 0);
@@ -29,8 +42,8 @@ export const calculateSum = (rolls: Roll[]): { sum: number; frames: Frame[] } =>
     let gameSum = 0;
     let rollIndex = 0;
 
-    for (let frame = 0; frame < 10; frame++) {
-        const isLastFrame = frame === 10;
+    for (let frame = 0; frame < MAX_NO_FRAMES; frame++) {
+        const isLastFrame = frame === MAX_NO_FRAMES - 1;
         const currRoll = getRollAtIndex(rollIndex);
         const nextRoll = getRollAtIndex(rollIndex + 1);
         const nextNextRoll = getRollAtIndex(rollIndex + 2);
@@ -60,7 +73,8 @@ export const calculateSum = (rolls: Roll[]): { sum: number; frames: Frame[] } =>
             total: gameSum,
         });
     }
-    return { sum: gameSum, frames };
+
+    return { sum: gameSum, frames, isGameFinished: isGameFinished(frames) };
 };
 
 // What symbol/number to show in the frame
@@ -70,10 +84,23 @@ export const getRollResultSymbols = (
     roll3: Roll
 ): Array<string | number> => {
     const roll1Symbol = isStrike(roll1) ? 'X' : roll1;
-    const roll2Symbol = isStrike(roll2) ? 'X' : isSpare(roll1, roll2) ? '/' : roll2;
+    const roll2Symbol = isStrike(roll2)
+        ? 'X'
+        : isStrike(roll1)
+        ? ''
+        : isSpare(roll1, roll2)
+        ? '/'
+        : roll2;
     const roll3Symbol = isStrike(roll3) ? 'X' : roll3;
 
-    return [roll1Symbol, roll2Symbol, roll3Symbol];
+    const getUnrolledValue = (roll: Roll | string): string | number =>
+        roll === UNROLLED ? '' : roll;
+
+    return [
+        getUnrolledValue(roll1Symbol),
+        getUnrolledValue(roll2Symbol),
+        getUnrolledValue(roll3Symbol),
+    ];
 };
 
 // How many pins are left on the frame

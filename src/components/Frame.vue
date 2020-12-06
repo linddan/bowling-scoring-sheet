@@ -1,16 +1,19 @@
 <template>
-    <div class="flex flex-col h-24 w-24 bg-white border-r border-b shadow-sm">
+    <div class="flex flex-col h-24 w-24 bg-white border-yellow-400 border-r border-b shadow-b-md">
         <!-- Turn -->
-        <div class=" text-center font-semi-bold bg-indigo-100">{{ turn }}</div>
+        <div class=" text-center font-semi-bold bg-yellow-400">{{ turn }}</div>
         <!-- Rolls -->
-        <div class="flex items-center flex-row border-b">
-            <div class="flex-grow h-6 w-6 text-center text-sm border-r">
+        <div class="flex items-center flex-row border-yellow-400 border-b">
+            <div class="flex-grow h-6 w-6 text-center text-sm border-yellow-400 border-r">
                 {{ rollResultSymbols[0] }}
             </div>
             <div class="flex-grow h-6 w-6 text-center text-sm">
                 {{ rollResultSymbols[1] }}
             </div>
-            <div v-if="turn === 10" class="flex-grow h-6 w-6 border-l text-center text-sm">
+            <div
+                v-if="turn === 10"
+                class="flex-grow h-6 w-6 border-yellow-400 border-l text-center text-sm"
+            >
                 {{ rollResultSymbols[2] }}
             </div>
         </div>

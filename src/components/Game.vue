@@ -1,15 +1,13 @@
 <template>
-    <div class="my-8">
+    <div>
         <!-- Player -->
-        <player :name="playerName" />
-        <!-- Total -->
-        <div class="text-xl text-white">Total: {{ total }}</div>
         <!-- Score input -->
-        <div class="flex flex-row w-full py-4">
+        <div class="flex flex-row justify-between w-full py-4">
             <score-input v-if="!isGameFinished" :max="pinsLeft" @roll="onRoll" />
+            <player :name="playerName" />
         </div>
         <!-- Frames -->
-        <div class="flex flex-wrap shadow-md">
+        <div class="flex flex-wrap">
             <frame
                 v-for="(_, index) in 10"
                 :turn="index + 1"
@@ -29,6 +27,8 @@ import Frame from './Frame.vue';
 import ScoreInput from './ScoreInput.vue';
 import Player from './Player.vue';
 import TotalFrame from './TotalFrame.vue';
+import { getPinsLeft } from '@/utils/game';
+import { computed } from 'vue';
 
 export default {
     emits: ['roll', 'gameover'],
@@ -41,21 +41,23 @@ export default {
         isGameFinished: Boolean,
     },
     setup(props, context) {
-        // const pinsLeft = computed(() => calculatePinsLeft(frames.value));
+        const lastFrame = computed(() => props.frames[props.frames.length - 1]);
+        const pinsLeft = computed(() =>
+            lastFrame.value ? getPinsLeft(props.frames[props.frames.length - 1]) : 11
+        );
 
         const onRoll = (score) => {
             context.emit('roll', {
                 score,
                 gameId: props.id,
             });
-            // console.log('ROLL', { score, gameId: props.id });
         };
 
         const onGameOver = () => {
             context.emit('gameover', props.id);
         };
 
-        return { onRoll, pinsLeft: 10, onGameOver };
+        return { onRoll, pinsLeft, onGameOver };
     },
 };
 </script>

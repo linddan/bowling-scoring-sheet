@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col h-24 w-24 bg-white border-r border-b shadow-sm">
+    <div class="flex flex-col h-24 w-24 bg-white border-yellow-400 border-r border-b shadow-sm">
         <!-- Header -->
-        <div class="text-center font-bold bg-indigo-100">Total</div>
+        <div class="text-center font-bold bg-yellow-400">Total</div>
         <!-- Total -->
         <div class="flex items-center h-full w-full">
             <div class="text-center w-full text-4xl font-bold">

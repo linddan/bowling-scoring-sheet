@@ -48,7 +48,6 @@ describe('calculateSum - isGameFinshed', () => {
         const prevRolls = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; //36
         const lastFrameRolls = [10, 10, 1]; // 7
         const rolls = [...prevRolls, ...lastFrameRolls];
-        console.log('ROLLS', rolls);
         const { isGameFinished } = calculateSum(rolls);
         expect(isGameFinished).toBe(true);
     });

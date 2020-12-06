@@ -26,7 +26,6 @@ export const createNewGame = (playerName: string): Game => ({
 const isGameFinished = (frames: Frame[]): boolean => {
     if (frames.length !== MAX_NO_FRAMES) return false;
     const { roll1, roll2, roll3 } = frames[MAX_NO_FRAMES - 1];
-    console.log('ROLLS', { roll1, roll2, roll3 });
     return isStrike(roll1) || isStrike(roll2) || isSpare(roll1, roll2)
         ? isRolled(roll3)
         : isRolled(roll2);
@@ -74,8 +73,6 @@ export const calculateSum = (
             total: gameSum,
         });
     }
-    console.log({ frames });
-
     return { sum: gameSum, frames, isGameFinished: isGameFinished(frames) };
 };
 
@@ -106,4 +103,11 @@ export const getRollResultSymbols = (
 };
 
 // How many pins are left on the frame
-// export const calculatePinsLeft = () => {};
+export const getPinsLeft = ({ roll1, roll2, roll3 }: Frame) => {
+    if (isRolled(roll1, roll2)) {
+        // New frame
+        return 10;
+    } else {
+        return 10 - roll1 - roll2;
+    }
+};

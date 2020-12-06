@@ -1,17 +1,17 @@
 <template>
-    <div class="flex items-center flex-col">
-        <div class="flex mb-8">
+    <div class="flex items-start sm:items-center flex-col p-8">
+        <div class="flex flex-col space-y-2 sm:space-y-0 sm:flex-row items-start flex-wrap mb-8">
             <!-- Add game -->
             <form autocomplete="off" @submit.prevent="addNewGame(newPlayerName)">
                 <input
-                    class="p-2 h-full border-2 border-gray-600 rounded-sm  text-gray-600 placeholder-gray-300 focus:outline-none"
+                    class="px-4 py-2 bg-white rounded-sm border-2 border-white text-gray-800 placeholder-gray-200 focus:outline-none"
                     v-model="newPlayerName"
                     type="text"
                     placeholder="Enter your name"
                     data-cy="nameInput"
                 />
                 <button
-                    class="ml-2 px-4 py-2 rounded-full border-2 border-green-500 hover:shadow-md transform hover:-translate-y-0.5 text-md text-green-800 font-medium focus:outline-none"
+                    class="ml-2 h-12 px-4 rounded-full border-2 border-green-500 hover:shadow-md transform hover:-translate-y-0.5 text-md text-green-800 font-medium focus:outline-none"
                 >
                     Add a game
                 </button>

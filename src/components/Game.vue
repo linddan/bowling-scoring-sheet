@@ -1,9 +1,9 @@
 <template>
     <div>
-        <!-- Player -->
         <!-- Score input -->
         <div class="flex flex-row justify-between w-full py-4">
             <score-input v-if="!isGameFinished" :max="pinsLeft" @roll="onRoll" />
+            <!-- Player -->
             <player :name="playerName" />
         </div>
         <!-- Frames -->
@@ -50,10 +50,7 @@ export default {
             });
         };
 
-        const onGameOver = () => {
-            context.emit('gameover', props.id);
-        };
-
+        const onGameOver = () => context.emit('gameover', props.id);
         return { onRoll, pinsLeft, onGameOver };
     },
 };

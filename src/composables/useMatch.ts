@@ -71,7 +71,6 @@ export default (): UseMatch => {
                 frames,
                 gameState: isGameFinished ? GameState.Finished : game.gameState,
             };
-            console.log({ newGame });
             setGames([newGame, ...restGames]);
         }
     };

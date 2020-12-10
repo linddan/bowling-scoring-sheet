@@ -64,15 +64,11 @@ export default {
 
         const newPlayerName = ref('');
 
-        const onPlayerRoll = ({ gameId, score }) => {
-            updateRolls(gameId, score);
-        };
+        const onPlayerRoll = ({ gameId, score }) => updateRolls(gameId, score);
+        const onGameOver = (gameId) => endGame(gameId);
         const addNewGame = (playerName) => {
             addGame(playerName);
             newPlayerName.value = '';
-        };
-        const onGameOver = (gameId) => {
-            endGame(gameId);
         };
         return {
             games,

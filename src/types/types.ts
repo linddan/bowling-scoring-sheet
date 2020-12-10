@@ -1,3 +1,5 @@
+import { ComputedRef } from 'vue';
+
 export enum GameState {
     Finished = 'FINISHED',
     NotStarted = 'NOT_STARTED',
@@ -29,4 +31,17 @@ export interface Frame {
     roll2: Roll;
     roll3: Roll;
     total: number;
+}
+
+export interface UseMatch {
+    games: ComputedRef<Game[]>;
+    addGame: (playerName: string) => void;
+    updateRolls: (gameId: string, rollIndex: number, rollScore: number) => void;
+    startMatch: () => void;
+    endMatch: () => void;
+    resetMatch: () => void;
+    isMatchFinished: ComputedRef<boolean>;
+    isMatchNotStarted: ComputedRef<boolean>;
+    isMatchPlaying: ComputedRef<boolean>;
+    isGameFinished: (gameId: string) => boolean;
 }

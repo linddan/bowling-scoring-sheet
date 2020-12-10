@@ -30,7 +30,6 @@
 import { computed } from 'vue';
 import { getRollResultSymbols } from '@/utils/game';
 export default {
-    emits: ['gameover'],
     props: {
         turn: Number,
         roll1: Number,

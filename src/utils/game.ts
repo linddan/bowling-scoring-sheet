@@ -1,4 +1,4 @@
-import { Frame, Game, GameState, Roll } from '@/types/game';
+import { Frame, Game, GameState, Roll } from '@/types/types';
 import { v4 as uuid } from 'uuid';
 
 export const UNROLLED = -1;

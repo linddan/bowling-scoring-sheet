@@ -1,6 +1,6 @@
-import { Game } from '@/types/game';
-import { reactive, ComputedRef, computed } from 'vue';
-import { MatchStoreState, GameState } from '@/types/game';
+import { Game } from '@/types/types';
+import { reactive, computed } from 'vue';
+import { MatchStoreState, GameState, UseMatch } from '@/types/types';
 import { calculateSum, createNewGame } from '@/utils/game';
 
 // TODO: Cleanup. Especially match/game-states.
@@ -10,22 +10,10 @@ const state: MatchStoreState = reactive({
     matchState: GameState.NotStarted,
 });
 
-interface UseMatch {
-    games: ComputedRef<Game[]>;
-    addGame: (playerName: string) => void;
-    updateRolls: (gameId: string, rollIndex: number, rollScore: number) => void;
-    startMatch: () => void;
-    endMatch: () => void;
-    endGame: (gameId: string) => void;
-    resetMatch: () => void;
-    isMatchFinished: ComputedRef<boolean>;
-    isMatchNotStarted: ComputedRef<boolean>;
-    isMatchPlaying: ComputedRef<boolean>;
-    isGameFinished: (gameId: string) => boolean;
-}
-
 export default (): UseMatch => {
+    //
     // Mutations
+    //
     const setGames = (payload: Game[]) => {
         state.games = payload;
     };
@@ -33,30 +21,31 @@ export default (): UseMatch => {
         state.matchState = payload;
     };
 
+    //
     // Actions
+    //
+
+    // Starts the match
     const startMatch = () => setMatchState(GameState.Playing);
+
+    // Ends the match
     const endMatch = () => setMatchState(GameState.Finished);
+
+    // Resets the match (remove all added games)
     const resetMatch = () => {
         setGames([] as Game[]);
         setMatchState(GameState.NotStarted);
     };
 
-    const endGame = (gameId: string) => {
-        const game = state.games.find((game) => game.id === gameId);
-        const restGames = state.games.filter((game) => game.id !== gameId);
-        if (game) {
-            game.gameState = GameState.Finished;
-            setGames([game, ...restGames]);
-        }
-    };
+    // Adds a game to the match
     const addGame = (playerName: string) => {
         setGames([...state.games, createNewGame(playerName)] as Game[]);
         startMatch();
     };
 
+    // Add a roll to a game
     const updateRolls = (gameId: string, rollScore: number) => {
         const game = state.games.find((game) => game.id === gameId);
-        const restGames = state.games.filter((game) => game.id !== gameId);
         if (game) {
             // Update roll score
             const updatedRolls = [...game.rolls, rollScore];
@@ -71,11 +60,15 @@ export default (): UseMatch => {
                 frames,
                 gameState: isGameFinished ? GameState.Finished : game.gameState,
             };
+            const restGames = state.games.filter((game) => game.id !== gameId);
             setGames([newGame, ...restGames]);
         }
     };
 
+    //
     // Getters
+    //
+    const games = computed(() => state.games);
     const isMatchFinished = computed(
         () =>
             state.matchState === GameState.Playing &&
@@ -90,16 +83,15 @@ export default (): UseMatch => {
     };
 
     return {
-        games: computed(() => state.games),
+        games,
+        isMatchFinished,
+        isMatchNotStarted,
+        isMatchPlaying,
         addGame,
         updateRolls,
         startMatch,
         endMatch,
-        endGame,
         resetMatch,
-        isMatchFinished,
-        isMatchNotStarted,
-        isMatchPlaying,
         isGameFinished,
     };
 };

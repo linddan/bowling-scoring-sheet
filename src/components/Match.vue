@@ -37,7 +37,6 @@
             :total="game.total"
             :isGameFinished="isGameFinished(game.id)"
             @roll="onPlayerRoll"
-            @gameover="onGameOver"
         />
     </div>
 </template>
@@ -53,7 +52,6 @@ export default {
         const {
             games,
             addGame,
-            endGame,
             resetMatch,
             startMatch,
             updateRolls,
@@ -65,11 +63,11 @@ export default {
         const newPlayerName = ref('');
 
         const onPlayerRoll = ({ gameId, score }) => updateRolls(gameId, score);
-        const onGameOver = (gameId) => endGame(gameId);
         const addNewGame = (playerName) => {
             addGame(playerName);
             newPlayerName.value = '';
         };
+
         return {
             games,
             addNewGame,
@@ -80,7 +78,6 @@ export default {
             isGameFinished,
             isMatchFinished,
             isMatchPlaying,
-            onGameOver,
         };
     },
 };

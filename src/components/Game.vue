@@ -31,7 +31,7 @@ import { getPinsLeft } from '@/utils/game';
 import { computed } from 'vue';
 
 export default {
-    emits: ['roll', 'gameover'],
+    emits: ['roll'],
     components: { Frame, ScoreInput, Player, TotalFrame },
     props: {
         id: String,
@@ -50,8 +50,7 @@ export default {
             });
         };
 
-        const onGameOver = () => context.emit('gameover', props.id);
-        return { onRoll, pinsLeft, onGameOver };
+        return { onRoll, pinsLeft };
     },
 };
 </script>

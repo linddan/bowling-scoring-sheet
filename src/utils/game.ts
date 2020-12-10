@@ -37,6 +37,7 @@ export const calculateSum = (
     // Create helper function to get roll value at a given index
     const getRollAtIndex = createGetRollAtIndex(rolls);
 
+    // Create a sum for each frame
     for (let frame = 0; frame < MAX_NO_FRAMES; frame++) {
         const currRoll = getRollAtIndex(rollIndex);
         const nextRoll = getRollAtIndex(rollIndex + 1);
@@ -98,6 +99,7 @@ export const getRollResultSymbols = (
         : roll2;
     const roll3Symbol = isStrike(roll3) ? 'X' : roll3;
 
+    // Handle unrolled
     const getUnrolledValue = (roll: Roll | string): string | number =>
         roll === UNROLLED ? '' : roll;
 
@@ -110,19 +112,18 @@ export const getRollResultSymbols = (
 
 // How many pins are left on the frame
 export const getPinsLeft = (frames: Frame[]) => {
-    // First frame
-    if (frames.length === 0) return MAX_NO_PINS;
+    const isFirstFrameNotStarted = frames.length === 0;
 
-    const isLastFrame = frames.length === MAX_NO_FRAMES;
-    const { roll1, roll2 } = frames[frames.length - 1];
-
-    if (isLastFrame) {
-        //TODO: Add logic to return correct amount
-        return 10;
-    } else if (isRolled(roll1, roll2)) {
-        // New frame started
-        return 10;
+    if (isFirstFrameNotStarted) {
+        // First roll not rolled yet
+        return MAX_NO_PINS;
     } else {
-        return 10 - roll1;
+        // Get the current frames rolls
+        const { roll1, roll2 } = frames[frames.length - 1];
+        if (isRolled(roll1, roll2)) {
+            return MAX_NO_PINS;
+        } else {
+            return MAX_NO_PINS - getAddValue(roll1);
+        }
     }
 };

@@ -113,16 +113,34 @@ export const getRollResultSymbols = (
 // How many pins are left on the frame
 export const getPinsLeft = (frames: Frame[]) => {
     const isFirstFrameNotStarted = frames.length === 0;
+    const isLastFrame = frames.length === MAX_NO_FRAMES;
 
+    // First roll not rolled yet
     if (isFirstFrameNotStarted) {
-        // First roll not rolled yet
         return MAX_NO_PINS;
-    } else {
-        // Get the current frames rolls
-        const { roll1, roll2 } = frames[frames.length - 1];
-        if (isRolled(roll1, roll2)) {
+    }
+
+    // [X, X, ]
+    // [5, 5 , ]
+    // [X, ]
+    // [3,  , ]
+    // [3,  3, ]
+
+    const { roll1, roll2, roll3 } = frames[frames.length - 1];
+
+    if (isLastFrame) {
+        if (isStrike(roll1) || isStrike(roll2) || isSpare(roll1, roll2)) {
             return MAX_NO_PINS;
         } else {
+            return MAX_NO_PINS - getAddValue(roll1);
+        }
+    } else {
+        if (isRolled(roll1, roll2)) {
+            // Get the current frames rolls
+            // On a fresh frame (or roll 3)
+            return MAX_NO_PINS;
+        } else {
+            // We're on roll 2 or 3
             return MAX_NO_PINS - getAddValue(roll1);
         }
     }

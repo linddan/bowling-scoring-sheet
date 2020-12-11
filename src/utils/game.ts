@@ -7,16 +7,21 @@ export const MAX_NO_FRAMES = 10;
 
 // Check if all rolls passed are rolled
 export const isRolled = (...rolls: Roll[]): boolean => rolls.every((roll) => roll !== UNROLLED);
+
 // Check if passed roll is a strike
 export const isStrike = (roll: Roll): boolean => (isRolled(roll) ? roll === MAX_NO_PINS : false);
+
 // Check if first two rolls are a spare
 export const isSpare = (roll1: Roll, roll2: Roll): boolean =>
     isRolled(roll1, roll2) ? roll1 + roll2 === MAX_NO_PINS : false;
+
 // Get roll value at a given index
 export const createGetRollAtIndex = (rolls: Roll[]) => (index: number) =>
     rolls[index] === undefined ? UNROLLED : rolls[index];
+
 // Get value to be added to sum from a roll
 export const getAddValue = (roll: Roll) => (isRolled(roll) ? roll : 0);
+
 // Check if game is finished based on status of last frame
 export const isGameFinished = (frames: Frame[]): boolean => {
     if (frames.length !== MAX_NO_FRAMES) return false;

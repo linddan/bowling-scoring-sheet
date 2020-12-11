@@ -1,10 +1,10 @@
 <template>
-    <div class="flex flex-col h-24 w-24 bg-white border-yellow-400 border-r border-b shadow-b-md">
+    <div class="flex flex-col h-24 w-24 bg-white border-yellow-400 border-l border-b shadow-b-md">
         <!-- Turn -->
         <div class=" text-center font-semi-bold bg-yellow-400">{{ turn }}</div>
         <!-- Rolls -->
         <div class="flex items-center flex-row border-yellow-400 border-b">
-            <div class="flex-grow h-6 w-6 text-center text-sm border-yellow-400 border-r">
+            <div class="flex-grow h-6 w-6 text-center text-sm border-yellow-400 border-r ">
                 {{ rollResultSymbols[0] }}
             </div>
             <div class="flex-grow h-6 w-6 text-center text-sm">
@@ -30,7 +30,6 @@
 import { computed } from 'vue';
 import { getRollResultSymbols } from '@/utils/game';
 export default {
-    emits: ['gameover'],
     props: {
         turn: Number,
         roll1: Number,

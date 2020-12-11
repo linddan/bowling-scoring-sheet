@@ -4,7 +4,7 @@
             <!-- Add game -->
             <form autocomplete="off" @submit.prevent="addNewGame(newPlayerName)">
                 <input
-                    class="px-4 py-2 bg-white rounded-sm border-2 border-white text-gray-800 placeholder-gray-200 focus:outline-none"
+                    class="px-4 py-2 bg-white rounded-sm border-2 border-gray-500 text-gray-800 placeholder-gray-200 focus:outline-none"
                     v-model="newPlayerName"
                     type="text"
                     placeholder="Enter your name"
@@ -37,7 +37,6 @@
             :total="game.total"
             :isGameFinished="isGameFinished(game.id)"
             @roll="onPlayerRoll"
-            @gameover="onGameOver"
         />
     </div>
 </template>
@@ -53,7 +52,6 @@ export default {
         const {
             games,
             addGame,
-            endGame,
             resetMatch,
             startMatch,
             updateRolls,
@@ -64,16 +62,12 @@ export default {
 
         const newPlayerName = ref('');
 
-        const onPlayerRoll = ({ gameId, score }) => {
-            updateRolls(gameId, score);
-        };
+        const onPlayerRoll = ({ gameId, score }) => updateRolls(gameId, score);
         const addNewGame = (playerName) => {
             addGame(playerName);
             newPlayerName.value = '';
         };
-        const onGameOver = (gameId) => {
-            endGame(gameId);
-        };
+
         return {
             games,
             addNewGame,
@@ -84,7 +78,6 @@ export default {
             isGameFinished,
             isMatchFinished,
             isMatchPlaying,
-            onGameOver,
         };
     },
 };

@@ -19,6 +19,7 @@ export default {
     },
     setup(props, context) {
         const onClick = (score) => context.emit('roll', score);
+
         return { onClick };
     },
 };

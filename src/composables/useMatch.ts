@@ -1,5 +1,6 @@
-import { Game } from '@/types/types';
 import { reactive, computed } from 'vue';
+import { sortBy } from 'lodash';
+import { Game } from '@/types/types';
 import { MatchStoreState, GameState, UseMatch } from '@/types/types';
 import { calculateSum, createNewGame } from '@/utils/game';
 
@@ -14,11 +15,11 @@ export default (): UseMatch => {
     //
     // Mutations
     //
-    const setGames = (payload: Game[]) => {
-        state.games = payload;
+    const setGames = (games: Game[]) => {
+        state.games = sortBy(games, 'id');
     };
-    const setMatchState = (payload: GameState) => {
-        state.matchState = payload;
+    const setMatchState = (matchState: GameState) => {
+        state.matchState = matchState;
     };
 
     //

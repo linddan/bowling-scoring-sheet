@@ -120,13 +120,7 @@ export const getPinsLeft = (frames: Frame[]) => {
         return MAX_NO_PINS;
     }
 
-    // [X, X, ]
-    // [5, 5 , ]
-    // [X, ]
-    // [3,  , ]
-    // [3,  3, ]
-
-    const { roll1, roll2, roll3 } = frames[frames.length - 1];
+    const { roll1, roll2 } = frames[frames.length - 1];
 
     if (isLastFrame) {
         if (isStrike(roll1) || isStrike(roll2) || isSpare(roll1, roll2)) {
